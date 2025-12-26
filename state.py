@@ -5,3 +5,9 @@ class AgentState(TypedDict):
     research_data: List[str]
     blog_post: str
 
+def validate_state(state: AgentState) -> bool:
+    if not state.get("topic"):
+        return False
+    return True
+
+
