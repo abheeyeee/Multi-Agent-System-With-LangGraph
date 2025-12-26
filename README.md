@@ -1,4 +1,9 @@
-# LangGraph Multi-Agent System
+# Langgraph Multi-Agent System
+
+## Status
+- Branches initialized.
+- Features being implemented.
+
 
 This is a demo of a multi-agent system built using [LangGraph](https://github.com/langchain-ai/langgraph). The system consists of two agents: a Researcher and a Writer. They collaborate to research a topic and write a brief blog post about it.
 
