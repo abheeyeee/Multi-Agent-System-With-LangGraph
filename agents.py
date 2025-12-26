@@ -29,6 +29,11 @@ def writer_node(state: AgentState):
         "research": "\n".join(state["research_data"])
     })
 
+    if not response.content:
+        return {
+            "blog_post": "Error: No content generated."
+        }
+
     return {
         "blog_post": response.content
     }
