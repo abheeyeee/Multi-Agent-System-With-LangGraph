@@ -1,5 +1,9 @@
 from graph_builder import compiled_graph
 
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 if __name__ == "__main__":
     topic = input("Enter the topic to research: ")
     result = compiled_graph.invoke({
