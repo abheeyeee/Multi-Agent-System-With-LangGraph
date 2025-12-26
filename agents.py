@@ -24,10 +24,18 @@ def writer_node(state: AgentState):
 
     chain = prompt | llm
 
-    response = chain.invoke({
-        "topic": state["topic"],
-        "research": "\n".join(state["research_data"])
-    })
+    try:
+        response = chain.invoke({
+            "topic": state["topic"],
+            "research": "\n".join(state["research_data"])
+        })
+    except Exception as e:
+        return {"blog_post": f"Error during generation: {str(e)}"}
+
+    if not response.content:
+        return {
+            "blog_post": "Error: No content generated."
+        }
 
     return {
         "blog_post": response.content
