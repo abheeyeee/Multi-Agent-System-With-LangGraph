@@ -23,21 +23,27 @@ def writer_node(state: AgentState):
     )
 
     chain = prompt | llm
-
     try:
-        response = chain.invoke({
+        print(">>> Generating blog post...")
+        full_content = ""
+        for chunk in chain.stream({
             "topic": state["topic"],
             "research": "\n".join(state["research_data"])
-        })
+        }):
+            if chunk.content:
+                print(chunk.content, end="", flush=True)
+                full_content += chunk.content
+        print() # Newline after streaming
+        
+        response_content = full_content
     except Exception as e:
         return {"blog_post": f"Error during generation: {str(e)}"}
 
-    if not response.content:
+    if not response_content:
         return {
             "blog_post": "Error: No content generated."
         }
 
     return {
-        "blog_post": response.content
+        "blog_post": response_content
     }
-
