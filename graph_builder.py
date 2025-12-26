@@ -11,5 +11,7 @@ workflow.set_entry_point("Researcher")
 workflow.add_edge("Researcher", "Writer")
 workflow.add_edge("Writer", END)
 
+print("Compiling graph...")
 compiled_graph = workflow.compile()
+print("Graph compiled successfully.")
 
