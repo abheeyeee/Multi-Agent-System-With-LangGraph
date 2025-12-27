@@ -67,16 +67,38 @@ Before running the project, ensure you have the following installed:
 
 ## 🐳 Docker Usage
 
-You can run the entire system using Docker Compose. This will spin up the application and a local Ollama instance (if configured) or connect to your existing one.
+Since this is an interactive command-line application, the best way to run it with Docker is using `docker-compose run`.
 
-1.  **Run with Compose**
+### Option 1: Run Everything in Docker (Recommended)
+
+1.  **Start the Ollama Service (Background)**
+    Start the LLM backend first.
     ```bash
-    docker-compose up --build
+    docker-compose up -d ollama
+    ```
+    *Wait a few seconds for it to initialize.*
+
+2.  **Run the Application**
+    This command runs the app interactively, allowing you to type your topic.
+    ```bash
+    docker-compose run --rm app
     ```
 
-2.  **Interact**
-    The application runs interactively. Attach to the container if needed or check logs.
-    *Note: Interactive input with docker-compose can be tricky. Ensure `stdin_open: true` and `tty: true` are set.*
+### Option 2: Use Local Ollama (Advanced)
+
+If you already have Ollama running on your host machine (Mac/Linux), you can connect the Docker container to it to save disk space (avoid downloading models again).
+
+1.  **Update `docker-compose.yml`**:
+    Change `OLLAMA_BASE_URL` to `http://host.docker.internal:11434` (Docker Desktop) or your host IP.
+
+2.  **Run the App**:
+    ```bash
+    docker-compose run --rm -e OLLAMA_BASE_URL=http://host.docker.internal:11434 app
+    ```
+
+### Useful Commands
+-   **Stop Services**: `docker-compose down`
+-   **Rebuild Image**: `docker-compose build --no-cache`
 
 ## 📦 Installation
 
