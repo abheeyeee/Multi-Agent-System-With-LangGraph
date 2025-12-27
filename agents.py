@@ -2,6 +2,9 @@ from langchain_community.tools.ddg_search import DuckDuckGoSearchRun
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from state import AgentState
+import os
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 def researcher_node(state: AgentState):
     print(">>> Researcher running")
@@ -16,7 +19,7 @@ def researcher_node(state: AgentState):
 def writer_node(state: AgentState):
     print(">>> Writer running")
 
-    llm = ChatOllama(model="llama3", temperature=0.7)
+    llm = ChatOllama(model="llama3", temperature=0.7, base_url=OLLAMA_BASE_URL)
 
     prompt = ChatPromptTemplate.from_template(
         "Using the following research:\n{research}\n\nWrite a short blog post about {topic}."

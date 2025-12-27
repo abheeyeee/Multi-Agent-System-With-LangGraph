@@ -1,5 +1,8 @@
 # LangGraph Multi-Agent Research System
 
+![CI](https://github.com/abheeyeee/Multi-Agent-System-With-LangGraph/actions/workflows/ci.yml/badge.svg)
+
+
 A powerful demonstration of multi-agent collaboration using [LangGraph](https://github.com/langchain-ai/langgraph). This project orchestrates two autonomous agents—a **Researcher** and a **Writer**—to automatically generate comprehensive blog posts on any given topic.
 
 ## 🌟 Introduction
@@ -59,6 +62,21 @@ Before running the project, ensure you have the following installed:
     ```bash
     ollama pull llama3
     ```
+    ollama pull llama3
+    ```
+
+## 🐳 Docker Usage
+
+You can run the entire system using Docker Compose. This will spin up the application and a local Ollama instance (if configured) or connect to your existing one.
+
+1.  **Run with Compose**
+    ```bash
+    docker-compose up --build
+    ```
+
+2.  **Interact**
+    The application runs interactively. Attach to the container if needed or check logs.
+    *Note: Interactive input with docker-compose can be tricky. Ensure `stdin_open: true` and `tty: true` are set.*
 
 ## 📦 Installation
 
