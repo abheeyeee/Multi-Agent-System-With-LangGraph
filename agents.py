@@ -2,51 +2,44 @@ from langchain_community.tools.ddg_search import DuckDuckGoSearchRun
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from state import AgentState
-import os
-
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 def researcher_node(state: AgentState):
-    print(">>> Researcher running")
-
+    topic = state["topic"]
+    print(f"Researcher is looking up: {topic}...")
+    
     search = DuckDuckGoSearchRun()
-    result = search.run(f"Explain {state['topic']}")
-
-    return {
-        "research_data": state.get("research_data", []) + [result]
-    }
+    
+    try:
+        # You can tweak this query as you like
+        results = search.run(f"key facts and latest news about {topic}")
+    except Exception as e:
+        results = f"Could not find data: {e}"
+        
+    print("Research complete.")
+    
+    # Only return the keys you want to update
+    return {"research_data": state.get("research_data", []) + [results]}
 
 def writer_node(state: AgentState):
-    print(">>> Writer running")
-
-    llm = ChatOllama(model="llama3", temperature=0.7, base_url=OLLAMA_BASE_URL)
-
+    print("Writer is drafting the post...")
+    
+    topic = state["topic"]
+    data = state["research_data"][-1] if state["research_data"] else ""
+    
+    llm = ChatOllama(model="llama3", temperature=0.7)
+    
     prompt = ChatPromptTemplate.from_template(
-        "Using the following research:\n{research}\n\nWrite a short blog post about {topic}."
+        """You are a tech blog writer. 
+Write a short, engaging blog post about "{topic}" 
+based ONLY on the following research data:
+
+{data}
+
+Return just the blog post content."""
     )
-
+    
     chain = prompt | llm
-    try:
-        print(">>> Generating blog post...")
-        full_content = ""
-        for chunk in chain.stream({
-            "topic": state["topic"],
-            "research": "\n".join(state["research_data"])
-        }):
-            if chunk.content:
-                print(chunk.content, end="", flush=True)
-                full_content += chunk.content
-        print() # Newline after streaming
-        
-        response_content = full_content
-    except Exception as e:
-        return {"blog_post": f"Error during generation: {str(e)}"}
-
-    if not response_content:
-        return {
-            "blog_post": "Error: No content generated."
-        }
-
-    return {
-        "blog_post": response_content
-    }
+    response = chain.invoke({"topic": topic, "data": data})
+    
+    print("Writing complete.")
+    return {"blog_post": response.content}
